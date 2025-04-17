@@ -8,26 +8,25 @@ import kotlin.io.path.name
 import kotlin.io.path.pathString
 
 fun main() {
-    val typeOfFile = "kt"
-    val mainPath = "C:\\Users\\hilana.pereira\\Pedro\\Projetos\\codecrafters\\codecrafters-redis-kotlin"
-    val resultFileName = "result.md" // will be generated on the root f this project
-    File(resultFileName).bufferedWriter().use { outResult ->
+    val extension = "kt"
+    val inputDirPath = "src/file/name"
+    val outputFilePath = "result.md" // will be generated on the root f this project
+    File(outputFilePath).bufferedWriter().use { outResult ->
         Files
-            .walk(Paths.get(mainPath))
+            .walk(Paths.get(inputDirPath))
             .collect(Collectors.toList())
+            .filter { filePath -> filePath.name.takeLast(extension.length) == extension }
             .forEach { filePath ->
-                if (filePath.name.takeLast(typeOfFile.length) == typeOfFile) {
-                    outResult.write(filePath.pathString)
-                    outResult.newLine()
-                    outResult.write("```$typeOfFile")
-                    outResult.newLine()
-                    File(filePath.pathString).forEachLine { outKt ->
-                        outResult.write(outKt)
-                        outResult.newLine()
-                    }
-                    outResult.write("```")
+                outResult.write(filePath.pathString)
+                outResult.newLine()
+                outResult.write("```$extension")
+                outResult.newLine()
+                File(filePath.pathString).forEachLine { outKt ->
+                    outResult.write(outKt)
                     outResult.newLine()
                 }
+                outResult.write("```")
+                outResult.newLine()
             }
     }
 }
